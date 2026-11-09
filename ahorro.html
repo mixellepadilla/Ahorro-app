@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahorra Sin Drama</title>
+<style>
+  :root{
+    --pink:#ff6fa5;
+    --pink-dark:#e24f86;
+    --purple:#8a5cf6;
+    --purple-light:#efe8ff;
+    --bg:#fff8fb;
+    --card:#ffffff;
+    --text:#3a2e3f;
+    --muted:#8a7d8f;
+    --green:#3dd17a;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding-bottom:60px;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+  header{
+    background:linear-gradient(135deg,var(--pink),var(--purple));
+    color:white;
+    padding:46px 20px 60px;
+    text-align:center;
+    border-radius:0 0 40px 40px;
+  }
+  header h1{
+    font-size:2rem;
+    margin:0 0 8px;
+    font-weight:800;
+  }
+  header p{
+    margin:0;
+    opacity:0.95;
+    font-size:1.02rem;
+    max-width:480px;
+    margin-inline:auto;
+  }
+
+  nav{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin:-30px auto 30px;
+    max-width:700px;
+    padding:0 16px;
+    position:relative;
+    z-index:5;
+  }
+  nav button{
+    background:white;
+    border:2px solid var(--purple-light);
+    color:var(--purple);
+    font-weight:600;
+    padding:10px 16px;
+    border-radius:30px;
+    cursor:pointer;
+    font-size:0.85rem;
+    font-family:inherit;
+    transition:all .2s;
+    box-shadow:0 4px 10px rgba(138,92,246,0.12);
+  }
+  nav button.active{
+    background:var(--purple);
+    color:white;
+    border-color:var(--purple);
+  }
+
+  main{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 20px;
+  }
+  section{display:none;}
+  section.active{display:block; animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:22px 20px;
+    margin-bottom:16px;
+    box-shadow:0 6px 20px rgba(138,92,246,0.08);
+  }
+  .card h2{
+    margin:0 0 6px;
+    font-size:1.2rem;
+    color:var(--pink-dark);
+  }
+  .card h3{
+    margin:0 0 6px;
+    font-size:1.02rem;
+  }
+  .card p{
+    margin:4px 0 0;
+    color:var(--muted);
+    font-size:0.92rem;
+    line-height:1.5;
+  }
+  .tag{
+    display:inline-block;
+    background:var(--purple-light);
+    color:var(--purple);
+    font-size:0.72rem;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:20px;
+    margin-bottom:8px;
+  }
+
+  /* Calculator */
+  .field{margin-bottom:14px;}
+  .field label{
+    display:block;
+    font-size:0.85rem;
+    font-weight:600;
+    margin-bottom:6px;
+    color:var(--text);
+  }
+  .field input, .field select{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    border:2px solid #f1e6f0;
+    font-size:0.95rem;
+    font-family:inherit;
+    background:#fffaf d;
+    background:#fffafd;
+  }
+  .field input:focus, .field select:focus{
+    outline:none;
+    border-color:var(--pink);
+  }
+  .btn{
+    background:var(--pink);
+    color:white;
+    border:none;
+    padding:13px 20px;
+    border-radius:14px;
+    font-weight:700;
+    font-size:0.95rem;
+    cursor:pointer;
+    width:100%;
+    font-family:inherit;
+    transition:transform .15s;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn.secondary{
+    background:var(--purple-light);
+    color:var(--purple);
+  }
+  .result{
+    margin-top:16px;
+    background:linear-gradient(135deg,#fff0f6,#f3edff);
+    border-radius:14px;
+    padding:16px;
+    text-align:center;
+    display:none;
+  }
+  .result.show{display:block;}
+  .result .big{
+    font-size:1.8rem;
+    font-weight:800;
+    color:var(--pink-dark);
+  }
+  .result .small{
+    font-size:0.8rem;
+    color:var(--muted);
+    margin-top:4px;
+  }
+
+  /* Challenge grid */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:8px;
+    margin-top:14px;
+  }
+  .day{
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f7f1fb;
+    border-radius:10px;
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--purple);
+    cursor:pointer;
+    border:2px solid transparent;
+    user-select:none;
+    transition:all .15s;
+  }
+  .day.done{
+    background:var(--green);
+    color:white;
+    border-color:var(--green);
+  }
+  .progress-bar{
+    height:10px;
+    background:#f1e6f0;
+    border-radius:20px;
+    overflow:hidden;
+    margin:14px 0 6px;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--pink),var(--purple));
+    width:0%;
+    transition:width .4s;
+  }
+  .progress-label{
+    font-size:0.82rem;
+    color:var(--muted);
+    text-align:right;
+  }
+
+  .tip-item{
+    display:flex;
+    gap:10px;
+    padding:12px 0;
+    border-bottom:1px solid #f4ecf2;
+  }
+  .tip-item:last-child{border-bottom:none;}
+  .tip-emoji{font-size:1.3rem;}
+
+  footer{
+    text-align:center;
+    font-size:0.78rem;
+    color:var(--muted);
+    padding:30px 20px 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💸 Ahorra Sin Drama</h1>
+  <p>Métodos fáciles, una calculadora de metas y un reto de 30 días para que ahorrar no se sienta imposible.</p>
+</header>
+
+<nav id="nav">
+  <button data-tab="metodos" class="active">Métodos</button>
+  <button data-tab="calculadora">Calculadora</button>
+  <button data-tab="reto">Reto 30 días</button>
+  <button data-tab="tips">Tips</button>
+</nav>
+
+<main>
+
+  <!-- METODOS -->
+  <section id="metodos" class="active">
+    <div class="card">
+      <span class="tag">MÉTODO 1</span>
+      <h2>Reto de las 52 semanas</h2>
+      <p>Cada semana ahorras un poco más que la anterior: semana 1 ahorras $10, semana 2 $20, y así hasta la semana 52. Sin darte cuenta, terminas el año con una buena cantidad guardada.</p>
+    </div>
+    <div class="card">
+      <span class="tag">MÉTODO 2</span>
+      <h2>Regla 50/30/20</h2>
+      <p>De lo que ganas: 50% a lo esencial (comida, transporte), 30% a gustos personales, y 20% directo al ahorro, sin tocarlo. Es la forma más simple de organizar cualquier ingreso, grande o chico.</p>
+    </div>
+    <div class="card">
+      <span class="tag">MÉTODO 3</span>
+      <h2>El bote del cambio</h2>
+      <p>Todo el cambio o los billetes chicos que te sobren al día se van directo a un bote o alcancía. No lo notas en el bolsillo, pero se acumula rápido.</p>
+    </div>
+    <div class="card">
+      <span class="tag">MÉTODO 4</span>
+      <h2>Sobres por categoría</h2>
+      <p>Divides tu dinero en "sobres" (pueden ser digitales): comida, diversión, ahorro, imprevistos. Cuando se acaba lo de un sobre, ya no gastas más en eso ese mes.</p>
+    </div>
+  </section>
+
+  <!-- CALCULADORA -->
+  <section id="calculadora">
+    <div class="card">
+      <h2>🎯 Calculadora de metas</h2>
+      <p>Dinos qué quieres lograr y te decimos cuánto ahorrar.</p>
+      <div style="margin-top:16px;">
+        <div class="field">
+          <label>¿Para qué estás ahorrando?</label>
+          <input type="text" id="goalName" placeholder="Ej. celular nuevo, viaje, curso...">
+        </div>
+        <div class="field">
+          <label>¿Cuánto cuesta / cuánto quieres ahorrar?</label>
+          <input type="number" id="goalAmount" placeholder="Ej. 3000" min="1">
+        </div>
+        <div class="field">
+          <label>¿En cuánto tiempo lo quieres lograr?</label>
+          <input type="number" id="goalTime" placeholder="Ej. 4" min="1" style="margin-bottom:8px;">
+        </div>
+        <div class="field">
+          <label>Unidad de tiempo</label>
+          <select id="goalUnit">
+            <option value="semanas">Semanas</option>
+            <option value="meses" selected>Meses</option>
+          </select>
+        </div>
+        <button class="btn" onclick="calcularMeta()">Calcular</button>
+      </div>
+      <div class="result" id="goalResult">
+        <div class="big" id="goalBig">$0</div>
+        <div class="small" id="goalSmall"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RETO -->
+  <section id="reto">
+    <div class="card">
+      <h2>🔥 Reto de 30 días</h2>
+      <p>Marca cada día que logres ahorrar algo, aunque sea poquito. Tu progreso se guarda en este navegador.</p>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 30 días</div>
+      <div class="grid" id="challengeGrid"></div>
+      <button class="btn secondary" style="margin-top:16px;" onclick="resetChallenge()">Reiniciar reto</button>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section id="tips">
+    <div class="card">
+      <h2>✨ Tips para gastar menos</h2>
+      <div class="tip-item">
+        <div class="tip-emoji">🛒</div>
+        <div><h3>Lista antes de comprar</h3><p>Antes de ir a la tienda o abrir la app, escribe qué necesitas. Si no está en la lista, espera 24 horas antes de comprarlo.</p></div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">📱</div>
+        <div><h3>Revisa tus suscripciones</h3><p>Streaming, apps, membresías... cancela las que no usas al menos una vez por semana.</p></div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">🍱</div>
+        <div><h3>Cocina en lote</h3><p>Preparar comida para varios días cuesta menos que pedir o comprar algo ya hecho cada vez.</p></div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">👗</div>
+        <div><h3>Regla de "lo que ya tengo"</h3><p>Antes de comprar ropa nueva, revisa si puedes combinar algo que ya tienes de forma diferente.</p></div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">💳</div>
+        <div><h3>Paga en efectivo cuando puedas</h3><p>Ver físicamente el dinero salir de tu bolsa ayuda más a frenar gastos que pagar sin pensar con tarjeta.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Hecho con 💗 para ayudarte a cumplir tus metas.</footer>
+
+<script>
+  // Tab navigation
+  const buttons = document.querySelectorAll('nav button');
+  const sections = document.querySelectorAll('main section');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      sections.forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Calculator
+  function calcularMeta(){
+    const name = document.getElementById('goalName').value || 'tu meta';
+    const amount = parseFloat(document.getElementById('goalAmount').value);
+    const time = parseFloat(document.getElementById('goalTime').value);
+    const unit = document.getElementById('goalUnit').value;
+    const resultBox = document.getElementById('goalResult');
+    if(!amount || !time || amount<=0 || time<=0){
+      document.getElementById('goalBig').textContent = '¡Faltan datos!';
+      document.getElementById('goalSmall').textContent = 'Llena el monto y el tiempo para calcular.';
+      resultBox.classList.add('show');
+      return;
+    }
+    const perPeriod = amount/time;
+    document.getElementById('goalBig').textContent = '$' + perPeriod.toLocaleString('es-MX',{maximumFractionDigits:2});
+    document.getElementById('goalSmall').textContent = `Ahorrando esto cada ${unit==='semanas'?'semana':'mes'} lograrás "${name}" en ${time} ${unit}.`;
+    resultBox.classList.add('show');
+  }
+
+  // Challenge grid with localStorage
+  const TOTAL_DAYS = 30;
+  const STORAGE_KEY = 'reto_ahorro_30dias';
+  let challengeState = [];
+
+  function loadChallenge(){
+    try{
+      const saved = localStorage.getItem(STORAGE_KEY);
+      challengeState = saved ? JSON.parse(saved) : new Array(TOTAL_DAYS).fill(false);
+    }catch(e){
+      challengeState = new Array(TOTAL_DAYS).fill(false);
+    }
+  }
+
+  function saveChallenge(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(challengeState)); }catch(e){}
+  }
+
+  function renderChallenge(){
+    const grid = document.getElementById('challengeGrid');
+    grid.innerHTML = '';
+    let doneCount = 0;
+    challengeState.forEach((done, i)=>{
+      const cell = document.createElement('div');
+      cell.className = 'day' + (done ? ' done' : '');
+      cell.textContent = i+1;
+      cell.addEventListener('click', ()=>{
+        challengeState[i] = !challengeState[i];
+        saveChallenge();
+        renderChallenge();
+      });
+      grid.appendChild(cell);
+      if(done) doneCount++;
+    });
+    document.getElementById('progressFill').style.width = (doneCount/TOTAL_DAYS*100) + '%';
+    document.getElementById('progressLabel').textContent = `${doneCount} / ${TOTAL_DAYS} días`;
+  }
+
+  function resetChallenge(){
+    challengeState = new Array(TOTAL_DAYS).fill(false);
+    saveChallenge();
+    renderChallenge();
+  }
+
+  loadChallenge();
+  renderChallenge();
+</script>
+
+</body>
+</html>
